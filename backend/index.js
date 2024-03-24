@@ -4,13 +4,15 @@ import router from "./routes/index.js"
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from"swagger-ui-express";
 import path from "path"
+import { swaggerServe, swaggerSetup } from './config.js'  
 
 const app = express();
 app.use(cors());
 app.use(express.json())
+app.use("/api-docs", swaggerServe, swaggerSetup); 
 
 
-const options = {
+/*const options = {
     customCss:
       '.swagger-ui .opblock .opblock-summary-path-description-wrapper { align-items: center; display: flex; flex-wrap: wrap; gap: 0 10px; padding: 0 10px; width: 100%; }',
     customCssUrl:
@@ -27,7 +29,7 @@ const options = {
         },
         servers: [
             {
-                url:"https://paytm-clone-zeta.vercel.app/"
+                url:"http://localhost:3000"
             }
         ],
         components: {
@@ -45,7 +47,7 @@ const options = {
 }
 
 const swaggerSpec = swaggerJSDoc(options);
-app.use("/api-docs",swaggerUi.serve,swaggerUi.setup(swaggerSpec));
+app.use("/api-docs",swaggerUi.serve,swaggerUi.setup(swaggerSpec));*/
 
 /**
  * @swagger
