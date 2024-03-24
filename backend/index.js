@@ -3,6 +3,7 @@ import cors from "cors"
 import router from "./routes/index.js"
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from"swagger-ui-express";
+import path from "path"
 
 const app = express();
 app.use(cors());
