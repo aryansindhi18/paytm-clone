@@ -27,7 +27,7 @@ paths:
   /api/v1/user/signup:
     post:
       summary: Sign up a new user
-      description: Route to sign up a new user...
+      description: Route to sign up a new user...(regex for phoneNo is /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/)
       tags: [User]
       requestBody:
         required: true
@@ -115,7 +115,7 @@ paths:
   /api/v1/user/user:
     put:
       summary: Update user details...
-      description: Route to Update user details...
+      description: Route to Update user details...(regex for phoneNo is /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/)
       tags: [User]
       security:
         - bearerAuth: []

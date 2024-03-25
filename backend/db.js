@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import dotenv from 'dotenv';
+dotenv.config();
 
-mongoose.connect('mongodb+srv://aryansindhi18:wsxokN0657%40@aryansindhi18.orx7din.mongodb.net/paytm-clone');
+mongoose.connect(process.env.MONGOURL);
 
 const userSchema = new mongoose.Schema({
     email: String, // String is shorthand for {type: String}
