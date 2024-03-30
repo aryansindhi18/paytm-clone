@@ -3,7 +3,7 @@ info:
   title: Share2Pay API
   version: 1.0.0
 servers:
-  - url: https://paytm-clone-zeta.vercel.app/
+  - url: https://share2paybackend.vercel.app/
 tags:
   - name: User
     description: Operations related to user profile
