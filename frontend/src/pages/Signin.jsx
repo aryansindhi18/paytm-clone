@@ -10,7 +10,7 @@ export function Signin(){
                 <Heading label={"Sign In"}></Heading>
                 <SubHeading label={"Enter your credentials to access your account"}></SubHeading>
                 <InputComponent label={"Username"} placeholder={"arsindhi18"}/>
-                <InputComponent label={"Password"} placeholder={"WeDnEsDaY@1029"}/>
+                <InputComponent label={"Password"} placeholder={"WeDnEsDaY@1029"} label2={"Forgot Password?"}/>
                 <div className=" pt-4">
                     <Button label={"Sign In"} onClick={()=>{console.log(`Signed In...`)}}/>
                 </div>
