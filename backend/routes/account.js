@@ -104,7 +104,7 @@ router.post("/transfer",async (req,res)=>{
     const session = await mongoose.startSession();
     session.startTransaction();
 
-    const {toUserId , amount} = req.body;
+    let {toUserId , amount} = req.body;
     const senderAccount = await Account.findOne({userId:req.userId}).session(session)
     console.log(`senderAccount.balance: ${senderAccount.balance}, amount:${amount}`)
     if(!senderAccount || senderAccount.balance<amount){
@@ -119,7 +119,7 @@ router.post("/transfer",async (req,res)=>{
         session.abortTransaction();
         return res.status(411).json({msg:`Invalid reciever account...`})
     }
-
+    amount = amount? amount: 0
     //Transfer of money
     await Account.updateOne({userId: req.userId},{$inc: {balance: -amount}}).session(session);
     await Account.updateOne({userId:toUserId},{$inc:{balance: amount}}).session(session);

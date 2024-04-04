@@ -96,6 +96,16 @@ paths:
                   token:
                     type: string
                     description: JWT token of the created user.
+                  username:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: string
+                  phoneNumber:
+                    type: string
         '400':
           description: Incorrect credentials....
         '403':

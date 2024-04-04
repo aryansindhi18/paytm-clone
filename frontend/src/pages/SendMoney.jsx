@@ -1,4 +1,16 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom"
+import axios from "axios";
 export function SendMoney(){
+    const [searchParams] = useSearchParams()
+    // console.log(searchParams)
+    const uid = searchParams.get("id");
+    const fname = searchParams.get("fname");
+    const lname = searchParams.get("lname");
+    const [amount,setamount] = useState(0);
+    const [paymentSuccess,setpaymentSuccess] = useState(false);
+    const [paymentFailure,setpaymentFailure] = useState(false)
     return <div className=" flex justify-center h-screen bg-gray-100">
         <div className=" flex flex-col justify-center h-full">
         <div className="border w-96 p-4 bg-white shadow-lg h-min rounded-lg
@@ -10,11 +22,11 @@ export function SendMoney(){
             <div className="flex space-x-4 items-center">
                 <div className="rounded-full bg-green-500 h-12 w-12 mt-1 mr-2 flex justify-center">
                     <div className="h-full text-2xl flex flex-col justify-center text-white">
-                        F
+                        {fname[0]}
                     </div>
                 </div>
                 <div className=" flex flex-col justify-center">
-                    <h3 className=" font-semibold text-2xl">Friend's Name</h3>
+                    <h3 className=" font-semibold text-2xl">{fname} {lname}</h3>
                 </div>
             </div>
             <div className="space-y-4">
@@ -23,13 +35,45 @@ export function SendMoney(){
                      peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         Amount (In ₹)
                     </label>
-                    <input type="number" id="amount" placeholder="Enter Amount" className=" h-10
+                    <input onChange={(e)=>{
+                        setamount(e.target.value);
+                    }} type="number" id="amount" value={amount} placeholder="Enter Amount" className=" h-10
                      w-full rounded-md border px-3 py-2 text-sm"/>
                 </div>
-                <button className=" rounded-md text-sm font-medium ring-offset-black
+                <button onClick={()=>{
+                    axios.post(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/account/transfer`,{
+                        toUserId:uid,
+                        amount: parseInt(amount)
+                        
+                    },{
+                        headers:{
+                            authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    }).then((res)=>{
+                        setTimeout(() => {
+                            setamount(0); // Reset amount input to blank
+                        }, 0);
+                        if(res.status==200){
+                            setpaymentSuccess(true)
+                        }
+                        else{
+                            setpaymentFailure(true)
+                        }
+                        
+                    })
+                }} className=" rounded-md text-sm font-medium ring-offset-black
                     transition-colors bg-green-500 h-10 w-full px-4 py-2 text-white">
                     Initiate Transfer
                 </button>
+                {paymentSuccess && <div className="justify-center py-2 text-sm">
+                    <div className=" justify-center flex text-green-500 font-semibold">Transfer succesful</div>
+                    <p>
+                        <Link to={"/dashboard"} className=" justify-center flex pointer underline cursor-pointer pl-1">Go to dashboard</Link>
+                    </p>
+                </div>}
+                {paymentFailure && <div className="justify-center py-2 text-sm">
+                    <div className=" text-red-500 font-semibold">Payment failed...</div>
+                </div>}
             </div>
         </div>
         </div>

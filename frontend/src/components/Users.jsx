@@ -1,13 +1,28 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "./Button"
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export function Users(){
-    const [users,setUsers] = useState([{
-        firstName:"Aryan",
-        lastName:"Sindhi",
-        _id:"1"
-    }])
+    const accessToken = localStorage.getItem(`token`);
+    const [filter,setFilter] = useState("")
+    const [users,setUsers] = useState([
+    //     {
+    //     firstName:"Aryan",
+    //     lastName:"Sindhi",
+    //     _id:"1"
+    // }
+])
+    useEffect(()=>{
+        axios.get(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/user/searchUsers?filter=${filter}`,{
+            headers:{
+                authorization: `Bearer ${accessToken}`
+            }
+        })
+        .then((res)=>{
+            setUsers(res.data.users)
+        })
+    },[])
     return <div>
         <div className="font-bold text-lg mt-6">
             Users
@@ -16,8 +31,11 @@ export function Users(){
             <input type="text" placeholder="Search Users" className="w-full"/>
         </div>
         <div>
-            {users.map((user)=>{
-                return <User user={user}/>
+            {/* {console.log(JSON.stringify(users))} */}
+            {
+            users.map((user)=>{
+                // console.log(user._id)
+                return <User user={user} key={user.userId}/>
             })}
         </div>
     </div>
@@ -36,7 +54,7 @@ function User({user}){
             </div>
         </div>
         <div className=" flex flex-col justify-center">
-            <Link to={'/sendmoney'}>
+            <Link to={`/sendmoney?id=${user.userId}&fname=${user.firstName}&lname=${user.lastName}`}>
             <Button label={`Send Money`} onClick={()=>{
                 console.log(`Money sent......`)
             }}></Button>
