@@ -203,7 +203,12 @@ router.post('/signin',async(req,res)=>{
     if(await validatePwd(signInBody.password,user.password)) {
         return res.status(200).json({
           message: `User ${signInBody.username} Successfully Logged In`,
-          token: generateAccessToken({username: signInBody.username})
+          token: generateAccessToken({username: signInBody.username}),
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phoneNumber: user.phoneNumber
         });
       } else {
         return res.status(400).json({
@@ -322,7 +327,7 @@ router.put('/user',async (req,res)=>{
 router.get("/searchUsers",async (req,res)=>{
     const filter= req.query.filter || "";
     console.log(`filter: ${filter}`)
-    const users = await User.find({
+    let users = await User.find({
         $or: [{
             firstName: {
                 "$regex": filter
@@ -333,9 +338,21 @@ router.get("/searchUsers",async (req,res)=>{
             }
         }]
     })
-
+    // console.log(`user._id=${user._id}`)
+    // users = users.filter((user)=>{
+    //     console.log('==================')
+    //     console.log(`user._id=${user._id}`)
+    //     console.log(`req.userId=${req.userId}`)
+    //     return user._id!=req.userId
+    // })
     res.json({
-        users: users.map((user)=>{
+        users: users.filter((user)=>{
+            // console.log('==================')
+            // console.log(`user._id=${user._id}`)
+            // console.log(`req.userId=${req.userId}`)
+            return String(user._id).trim()!=String(req.userId).trim()
+        })
+        .map((user)=>{
             return {
                 userId: user._id,
                 username: user.username,
