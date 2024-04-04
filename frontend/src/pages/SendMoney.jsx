@@ -1,16 +1,50 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSearchParams } from "react-router-dom"
+import { useSearchParams,useNavigate } from "react-router-dom"
 import axios from "axios";
+// import { Signin } from "./Signin";
 export function SendMoney(){
+    const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     // console.log(searchParams)
     const uid = searchParams.get("id");
-    const fname = searchParams.get("fname");
-    const lname = searchParams.get("lname");
+    const fname = searchParams.get("fname")
+    const lname = searchParams.get("lname")
     const [amount,setamount] = useState(0);
     const [paymentSuccess,setpaymentSuccess] = useState(false);
-    const [paymentFailure,setpaymentFailure] = useState(false)
+    const [paymentFailure,setpaymentFailure] = useState(false);
+    const [isSignedIn,setisSignedIn] = useState(true)
+    useEffect(()=>{
+        console.log(`2nd useEffect`)
+        axios.get(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/user`,{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+        .then((res)=>{
+            console.log(res.status)
+            if(res.status===200){
+                // setisSignedIn(true);
+                // navigate("/dashboard")
+                console.log(`issignedin=true inside .then 200`)
+            }
+            else{
+                console.log(`issignedin=false`)
+                setisSignedIn(false);
+                navigate("/signin?isLoggedOut=true")
+            }
+            
+        }).catch((e)=>{
+            setisSignedIn(false);
+            navigate("/signin?isLoggedOut=true")
+        })
+    },[isSignedIn,window.location.pathname])
+    // console.log(isSignedIn)
+    // if(isSignedIn==false){
+    //     console.log(`isSignedOut=false`)
+    //     return <Signin isLoggedOut={true}/>
+    // }
+    // console.log(`isSignedOut=true`)
     return <div className=" flex justify-center h-screen bg-gray-100">
         <div className=" flex flex-col justify-center h-full">
         <div className="border w-96 p-4 bg-white shadow-lg h-min rounded-lg

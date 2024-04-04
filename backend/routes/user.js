@@ -364,4 +364,19 @@ router.get("/searchUsers",async (req,res)=>{
 })
 
 
+// router.get("/verifyMe",(req,res)=>{
+//     try{
+//         return res.status(200).json({
+//             msg:`${req.username} is signed in`,
+//             isSignedIn: true
+//         })
+//     }
+//     catch(e){
+//         return res.status(500).json({
+//             msg:`Some error in verifyMe endpoint`,
+//             error: e
+//         })
+//     }
+// })
+
 export default router
