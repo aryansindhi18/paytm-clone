@@ -3,7 +3,7 @@ import { SubHeading } from "../components/SubHeading"
 import { InputComponent } from "../components/InputComponent"
 import { Button } from "../components/Button"
 import { BottomWarning } from "../components/BottomWarning"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 export function Signup(){
@@ -15,8 +15,24 @@ export function Signup(){
     const [username,setusername] = useState("")
     const [isSignedUp,setisSignedUp] = useState(false)
     const [isSignUpError,setisSignUpError] = useState(false)
+    // const [isSignedIn,setisSignedIn] = useState(false)
     const navigate = useNavigate()
+    useEffect(()=>{
+        axios.get(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/user`,{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+        .then((res)=>{
+            if(res.status==200){
+                // setisSignedIn(true);
+                navigate("/dashboard")
+            }
+            
+        })
+    },[])
     return <>
+        { 
         <div className=" flex justify-center bg-slate-300 h-screen">
             <div className=" flex flex-col justify-center">
                 <div className=" rounded-lg bg-white w-90 text-center p-2 h-max px-4">
@@ -53,6 +69,13 @@ export function Signup(){
                                 })
                                 if(response.data.token){
                                     localStorage.setItem("token",response.data.token);
+                                    localStorage.setItem("userInfo", JSON.stringify({
+                                        username,
+                                        firstName,
+                                        lastName,
+                                        email,
+                                        phoneNumber
+                                    }));
                                     setisSignedUp(true);
                                     setTimeout(()=>{
                                         navigate("/dashboard");
@@ -78,5 +101,6 @@ export function Signup(){
                 </div>
             </div>
         </div>
+    }
     </>
 }
