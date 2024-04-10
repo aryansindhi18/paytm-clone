@@ -50,7 +50,7 @@ export function Signup(){
                     <InputComponent onChange={(e)=>{
                         setusername(e.target.value)
                     }} label={"Username"} placeholder={"arsindhi18"}/>
-                    <InputComponent onChange={(e)=>{
+                    <InputComponent isPwd={true} onChange={(e)=>{
                         setpassword(e.target.value)
                     }} label={"Password"} placeholder={"WeDnEsDaY@01029"}/>
                     <InputComponent onChange={(e)=>{
