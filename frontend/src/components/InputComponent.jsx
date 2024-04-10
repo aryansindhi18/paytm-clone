@@ -43,7 +43,7 @@ export function InputComponent({label,placeholder,label2,onChange,isPwd}){
                 }}
                 className="absolute inset-y-0 right-0 pr-2 flex items-center cursor-pointer">
                     {showPassword ? (
-                        <FaEyeSlash onClick={togglePasswordVisibility} className="text-gray-400" />
+                        <FaEyeSlash className="text-gray-400" />
                     ) : (
                         <FaEye className="text-gray-400" />
                     )}
