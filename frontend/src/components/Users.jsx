@@ -14,21 +14,28 @@ export function Users(){
     // }
 ])
     useEffect(()=>{
-        axios.get(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/user/searchUsers?filter=${filter}`,{
-            headers:{
-                authorization: `Bearer ${accessToken}`
-            }
-        })
-        .then((res)=>{
-            setUsers(res.data.users)
-        })
-    },[])
+        const timeout = setTimeout(()=>{
+            axios.get(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/user/searchUsers?filter=${filter}`,{
+                headers:{
+                    authorization: `Bearer ${accessToken}`
+                }
+            })
+            .then((res)=>{
+                setUsers(res.data.users)
+            })
+        },700)
+        
+        return ()=> clearTimeout(timeout)
+    },[filter])
     return <div>
         <div className="font-bold text-lg mt-6">
             Users
         </div>
         <div className=" my-2 w-full border rounded border-slate-200">
-            <input type="text" placeholder="Search Users" className="w-full"/>
+            <input type="text" placeholder="Search Users" className="w-full"
+            onChange={(e)=>{
+                setFilter(e.target.value)
+            }}/>
         </div>
         <div>
             {/* {console.log(JSON.stringify(users))} */}

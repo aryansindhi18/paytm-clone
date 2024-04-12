@@ -2,6 +2,7 @@ import { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSearchParams,useNavigate } from "react-router-dom"
 import axios from "axios";
+import { TopBar } from "../components/TopBar"
 // import { Signin } from "./Signin";
 export function SendMoney(){
     const navigate = useNavigate()
@@ -14,6 +15,8 @@ export function SendMoney(){
     const [paymentSuccess,setpaymentSuccess] = useState(false);
     const [paymentFailure,setpaymentFailure] = useState(false);
     const [isSignedIn,setisSignedIn] = useState(true)
+    const [isPaymentDone,setisPaymentDone] = useState(true);
+    const userInfo = localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null
     useEffect(()=>{
         console.log(`2nd useEffect`)
         axios.get(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/user`,{
@@ -45,7 +48,9 @@ export function SendMoney(){
     //     return <Signin isLoggedOut={true}/>
     // }
     // console.log(`isSignedOut=true`)
-    return <div className=" flex justify-center h-screen bg-gray-100">
+    return <>
+        <TopBar userInfo={userInfo}/>
+        <div className=" flex justify-center h-screen bg-gray-100">
         <div className=" flex flex-col justify-center h-full">
         <div className="border w-96 p-4 bg-white shadow-lg h-min rounded-lg
          space-y-8 max-w-md">
@@ -75,6 +80,7 @@ export function SendMoney(){
                      w-full rounded-md border px-3 py-2 text-sm"/>
                 </div>
                 <button onClick={()=>{
+                    setisPaymentDone(false);
                     axios.post(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/account/transfer`,{
                         toUserId:uid,
                         amount: parseInt(amount)
@@ -88,16 +94,19 @@ export function SendMoney(){
                             setamount(0); // Reset amount input to blank
                         }, 0);
                         if(res.status==200){
-                            setpaymentSuccess(true)
+                            setpaymentSuccess(true);
+                            setisPaymentDone(true);
                         }
                         else{
                             setpaymentFailure(true)
+                            setisPaymentDone(true);
                         }
                         
                     })
-                }} className=" rounded-md text-sm font-medium ring-offset-black
-                    transition-colors bg-green-500 h-10 w-full px-4 py-2 text-white">
-                    Initiate Transfer
+                }} className={`rounded-md text-sm font-medium ring-offset-black
+                    transition-colors bg-green-500 h-10 w-full px-4 py-2 text-white
+                    ${isPaymentDone ? "" : "cursor-not-allowed"}`}>
+                    {(isPaymentDone)?`Initiate Transfer`:`Payemnt Processing...`}
                 </button>
                 {paymentSuccess && <div className="justify-center py-2 text-sm">
                     <div className=" justify-center flex text-green-500 font-semibold">Transfer succesful</div>
@@ -105,7 +114,7 @@ export function SendMoney(){
                         <Link to={"/dashboard"} className=" justify-center flex pointer underline cursor-pointer pl-1">Go to dashboard</Link>
                     </p>
                 </div>}
-                {paymentFailure && <div className="justify-center py-2 text-sm">
+                {paymentFailure && <div className={`justify-center py-2 text-sm`}>
                     <div className=" text-red-500 font-semibold">Payment failed...</div>
                 </div>}
             </div>
@@ -113,4 +122,5 @@ export function SendMoney(){
         </div>
         </div>
     </div>
+    </> 
 }

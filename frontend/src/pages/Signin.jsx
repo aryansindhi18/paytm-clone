@@ -19,6 +19,55 @@ export function Signin(){
     const {userInfo,setuserInfo} = useContext(userContext)
     const [searchParams] = useSearchParams()
     const isLoggedOut = searchParams.get("isLoggedOut");
+
+    const onClickSignIn = async ()=>{
+        // console.log(`Signed In...`)
+        try{
+            const response = await axios.post(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/user/signin`,{
+                username,
+                password
+
+            })
+            if(response.data.token){
+                
+                localStorage.setItem("token",response.data.token);
+                setisSignInError(false);
+                setisSignedIn(true);
+                // setuserInfo({
+                //     username: response.data.username,
+                //     firstName: response.data.firstName,
+                //     lastName: response.data.lastName,
+                //     email: response.data.email,
+                //     phoneNumber: response.data.phoneNumber
+                // })
+                // console.log({
+                //     username: response.data.username,
+                //     firstName: response.data.firstName,
+                //     lastName: response.data.lastName,
+                //     email: response.data.email,
+                //     phoneNumber: response.data.phoneNumber
+                // })
+                // console.log(`userInfo update`,JSON.stringify(userInfo))
+                localStorage.setItem("userInfo", JSON.stringify({
+                        username: response.data.username,
+                        firstName: response.data.firstName,
+                        lastName: response.data.lastName,
+                        email: response.data.email,
+                        phoneNumber: response.data.phoneNumber
+                    }));
+                setTimeout(()=>{
+                    navigate("/dashboard");
+                },718)
+            }
+        }
+        catch(e){
+            
+            console.log(`Error: ${e}`)
+            setisSignInError(true)
+            
+            // throw e
+        }
+        }
     useEffect(()=>{
         axios.get(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/user`,{
             headers:{
@@ -33,7 +82,13 @@ export function Signin(){
             
         })
     },[])
-    return <div className=" flex justify-center bg-slate-300 h-screen">
+    return <div className=" flex justify-center bg-slate-300 h-screen"
+            onKeyDown={(e)=>{
+                if(e.key===`Enter`){
+                console.log(`enter pressed...`)
+                    onClickSignIn();
+                }
+            }}>
         <div className=" flex flex-col justify-center">
             <div className=" rounded-lg bg-white w-90 text-center p-2 h-max px-4">
                 <Heading label={"Sign In"}></Heading>
@@ -48,7 +103,9 @@ export function Signin(){
                     setpassword(e.target.value);
                 }} label={"Password"} placeholder={"WeDnEsDaY@1029"} label2={"Forgot Password?"}/>
                 <div className=" pt-4">
-                        <Button label={"Sign In"} onClick={async ()=>{
+                        <Button label={"Sign In"}
+                        
+                        onClick={async ()=>{
                             console.log(`Signed In...`)
                             try{
                                 const response = await axios.post(`${import.meta.env.VITE_REACT_APP_BASEURL}/api/v1/user/signin`,{
